@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import hashlib
 import random
+import pandas as pd
 # -----------------------------
 # CONFIG
 # -----------------------------
@@ -11,12 +12,13 @@ animal = "cat"  # <-- change dynamically if needed
 image_dir = os.path.join("animals", animal)
 image_paths = sorted(os.listdir(image_dir))
 
+
 # Keep only image files
 image_paths = [
     img for img in image_paths
     if img.lower().endswith((".png", ".jpg", ".jpeg"))
 ]
-
+random.shuffle(image_paths)
 # -----------------------------
 # SESSION STATE INIT
 # -----------------------------
@@ -95,11 +97,36 @@ elif st.session_state.page == "task":
 
     total_images = len(image_paths)
 
-    # If finished all images
+
+
     if st.session_state.image_index >= total_images:
+
         st.success("All images completed.")
         st.write("Responses:")
-        st.write(st.session_state.responses)
+
+        df = pd.DataFrame(st.session_state.responses)
+ 
+        if not df.empty and "image" in df.columns:
+
+            # Ensure string type
+            df["image"] = df["image"].astype(str)
+
+            # Create filename column (original full name)
+            df["filename"] = df["image"]
+
+            # Remove extension from image column
+            df["image"] = df["image"].str.rsplit(".", n=1).str[0]
+
+        st.dataframe(df)
+        
+        csv = df.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            label="Download responses as CSV",
+            data=csv,
+            file_name=f"{st.session_state.username}_responses.csv",
+            mime="text/csv",
+        )
 
         if st.button("Restart"):
             reset_all()
@@ -132,14 +159,24 @@ elif st.session_state.page == "task":
         # -----------------------------
         elif st.session_state.step == 1:
 
-            # st.image(current_image_path, use_container_width=True)
-            st.markdown('## 1. How easy is it to imagine this image?')
-            q1 = st.radio(
-                "",
-                options=list(range(1, 8)),
-                horizontal=True,
-                key=f"q1_{st.session_state.image_index}"
-            )
+                        # st.image(current_image_path, use_container_width=True)
+            st.markdown("## 1. How easy is it to imagine this image?")
+
+            col1, col2, col3 = st.columns([1,4,1])
+
+            with col1:
+                st.write("Low")
+
+            with col2:
+                q1 = st.radio(
+                    "",
+                    options=list(range(1, 8)),
+                    horizontal=True,
+                    key=f"q1_{st.session_state.image_index}"
+                )
+
+            with col3:
+                st.write("High")
 
             if st.button("Next"):
                 st.session_state.current_q1 = q1
@@ -151,13 +188,23 @@ elif st.session_state.page == "task":
         elif st.session_state.step == 2:
 
             # st.image(current_image_path, use_container_width=True)
-            st.markdown('## 2. How vividly did you imagine it?')
-            q2 = st.radio(
-                "",
-                options=list(range(1, 8)),
-                horizontal=True,
-                key=f"q2_{st.session_state.image_index}"
-            )
+            st.markdown("## 1. How vividly can you imagine ?")
+
+            col1, col2, col3 = st.columns([1,4,1])
+
+            with col1:
+                st.write("Low")
+
+            with col2:
+                q2 = st.radio(
+                    "",
+                    options=list(range(1, 8)),
+                    horizontal=True,
+                    key=f"q1_{st.session_state.image_index}"
+                )
+
+            with col3:
+                st.write("High")
 
             if st.button("Submit"):
 
