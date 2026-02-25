@@ -200,7 +200,7 @@ elif st.session_state.page == "task":
                     "",
                     options=list(range(1, 8)),
                     horizontal=True,
-                    key=f"q1_{st.session_state.image_index}"
+                    key=f"q2_{st.session_state.image_index}"
                 )
 
             with col3:
