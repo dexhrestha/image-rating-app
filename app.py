@@ -8,16 +8,15 @@ import pandas as pd
 # -----------------------------
 st.set_page_config(page_title="Image Rating Task", layout="centered")
 
-animal = "cat"  # <-- change dynamically if needed
-image_dir = os.path.join("animals", animal)
-image_paths = sorted(os.listdir(image_dir))
-
-
-# Keep only image files
+# animal = "cat"  # <-- change dynamically if needed
+animals_dir = 'animals'
 image_paths = [
-    img for img in image_paths
-    if img.lower().endswith((".png", ".jpg", ".jpeg"))
+    os.path.join("animals", animal, f)
+    for animal in os.listdir(animals_dir)
+    for f in os.listdir(os.path.join("animals", animal))
 ]
+
+
 random.shuffle(image_paths)
 # -----------------------------
 # SESSION STATE INIT
@@ -67,9 +66,17 @@ def reset_all():
 # LOGIN PAGE
 # -----------------------------
 if st.session_state.page == "login":
+    st.markdown("""
+    ## Instructions
+                
+    You will see a picture of animal on the screen. Press the next button and close your eyes to imagine the picture. 
+    Your task is to answer questions that follows the picture. 
 
-    st.title("Enter your name")
-
+    Once you answer all the questions you will need to download the data in csv format and send to [dipesh.shrestha@unitn.it](mailto://dipesh.shrestha@unitn.it)     
+    
+    Enter your name and press start
+    """)
+    
     name_input = st.text_input("Name")
 
     if st.button("Start", disabled=not name_input.strip()):
@@ -132,8 +139,9 @@ elif st.session_state.page == "task":
             reset_all()
 
     else:
-        current_image_name = image_paths[st.session_state.image_index]
-        current_image_path = os.path.join(image_dir, current_image_name)
+        
+        current_image_path = image_paths[st.session_state.image_index]
+        current_image_name = os.path.basename(current_image_path)
 
         st.title("Image Imagery Rating")
         st.caption(
@@ -149,7 +157,7 @@ elif st.session_state.page == "task":
             col1, col2, col3 = st.columns([1,2,1])
 
             with col2:
-                st.image(current_image_path, use_container_width=True)
+                st.image(current_image_path, width=400)
 
             if st.button("Next"):
                 next_step()
@@ -159,13 +167,12 @@ elif st.session_state.page == "task":
         # -----------------------------
         elif st.session_state.step == 1:
 
-                        # st.image(current_image_path, use_container_width=True)
-            st.markdown("## 1. How easy is it to imagine this image?")
+            st.markdown("## When you recall the image you just saw, how vivid does it feel in your mind right now?")
 
             col1, col2, col3 = st.columns([1,4,1])
 
             with col1:
-                st.write("Low")
+                st.write("Extremely Easy")
 
             with col2:
                 q1 = st.radio(
@@ -176,7 +183,7 @@ elif st.session_state.page == "task":
                 )
 
             with col3:
-                st.write("High")
+                st.write("Extremely Difficult")
 
             if st.button("Next"):
                 st.session_state.current_q1 = q1
@@ -187,13 +194,12 @@ elif st.session_state.page == "task":
         # -----------------------------
         elif st.session_state.step == 2:
 
-            # st.image(current_image_path, use_container_width=True)
-            st.markdown("## 1. How vividly can you imagine ?")
+            st.markdown("## How easy is it to imagine this image?")
 
             col1, col2, col3 = st.columns([1,4,1])
 
             with col1:
-                st.write("Low")
+                st.write("Not vivid at all")
 
             with col2:
                 q2 = st.radio(
@@ -204,7 +210,7 @@ elif st.session_state.page == "task":
                 )
 
             with col3:
-                st.write("High")
+                st.write("Extremely vivid")
 
             if st.button("Submit"):
 
