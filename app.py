@@ -157,8 +157,9 @@ elif st.session_state.page == "task":
             col1, col2, col3 = st.columns([1,2,1])
 
             with col2:
-                st.image(current_image_path, width=400)
+                st.image(current_image_path, width=300)
 
+            st.text("Press next to answer questions about this image.")
             if st.button("Next"):
                 next_step()
 
@@ -167,13 +168,12 @@ elif st.session_state.page == "task":
         # -----------------------------
         elif st.session_state.step == 1:
 
-            st.markdown("## When you recall the image you just saw, how vivid does it feel in your mind right now?")
+            st.markdown("## Close your eye and try to recall the image. How vivid does it feel in your mind right now?")
 
             col1, col2, col3 = st.columns([1,4,1])
 
             with col1:
-                st.write("Extremely Easy")
-
+                st.write("Not vivid at all")
             with col2:
                 q1 = st.radio(
                     "",
@@ -183,7 +183,7 @@ elif st.session_state.page == "task":
                 )
 
             with col3:
-                st.write("Extremely Difficult")
+                st.write("Extremely vivid")
 
             if st.button("Next"):
                 st.session_state.current_q1 = q1
@@ -199,7 +199,8 @@ elif st.session_state.page == "task":
             col1, col2, col3 = st.columns([1,4,1])
 
             with col1:
-                st.write("Not vivid at all")
+                st.write("Extremely Easy")
+
 
             with col2:
                 q2 = st.radio(
@@ -210,7 +211,7 @@ elif st.session_state.page == "task":
                 )
 
             with col3:
-                st.write("Extremely vivid")
+                st.write("Extremely Difficult")
 
             if st.button("Submit"):
 
