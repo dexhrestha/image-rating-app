@@ -35,7 +35,7 @@ with hero_right:
         """
 **Recommended order**
 
-1. Image Rating
+1. Post Experiment Questionnaire
 2. Imagery Questionnaire
 3. VVIQ Questionnaire
 """
